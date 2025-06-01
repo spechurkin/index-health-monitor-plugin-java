@@ -1,0 +1,85 @@
+apply plugin: 'opensearch.opensearchplugin'
+apply plugin: 'opensearch.java-rest-test'
+apply plugin: 'opensearch.pluginzip'
+
+def pluginName = 'index-health-monitor'
+def pluginDescription = 'REST plugin showing full DB health'
+def packagePath = 'org.opensearch.indexhealthmonitor'
+def pathToPlugin = 'org.opensearch.indexhealthmonitor.IndexHealthMonitorPlugin'
+
+opensearchplugin {
+    name = pluginName
+    description = pluginDescription
+    classname = pathToPlugin
+    licenseFile = rootProject.file('licenses/APACHE-LICENSE-2.0.txt')
+    noticeFile = rootProject.file('NOTICE.txt')
+}
+
+// No unit tests in this example
+test.enabled = false
+loggerUsageCheck.enabled = false
+
+java {
+    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_21
+}
+
+tasks.register("preparePluginPathDirs") {
+    mustRunAfter clean
+    doLast {
+        def newPath = pathToPlugin.replace(".", "/")
+        mkdir "src/main/java/$newPath"
+        mkdir "src/test/java/$newPath"
+    }
+}
+
+buildscript {
+    ext {
+        opensearch_group = "org.opensearch"
+        opensearch_version = System.getProperty("opensearch.version", "3.0.0")
+    }
+
+    repositories {
+        mavenLocal()
+        maven { url "https://aws.oss.sonatype.org/content/repositories/snapshots" }
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+
+    dependencies {
+        classpath "org.opensearch.gradle:build-tools:${opensearch_version}"
+    }
+}
+
+repositories {
+    mavenLocal()
+    maven { url "https://aws.oss.sonatype.org/content/repositories/snapshots" }
+    mavenCentral()
+    maven { url "https://plugins.gradle.org/m2/" }
+}
+
+publishing {
+    publications {
+        pluginZip(MavenPublication) { publication ->
+            groupId = packagePath
+            artifactId = pluginName
+            pom {
+                name = pluginName
+                description = pluginDescription
+                version = '1.0.0'
+                licenses {
+                    license {
+                        name = "The Apache License, Version 2.0"
+                        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                    }
+                }
+                developers {
+                    developer {
+                        name = "hololight17"
+                        url = "https://github.com/spechurkin/index-health-monitor"
+                    }
+                }
+            }
+        }
+    }
+}
