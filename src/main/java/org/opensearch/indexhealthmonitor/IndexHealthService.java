@@ -30,7 +30,7 @@ public class IndexHealthService {
    * @return json
    * @throws IOException Input/Output handler
    */
-  private static String mapToJson(Map<String, Object> map) throws IOException {
+  private String mapToJson(Map<String, Object> map) throws IOException {
     StringWriter writer = new StringWriter();
     JsonFactory factory = new JsonFactory();
     JsonGenerator generator = factory.createGenerator(writer);
