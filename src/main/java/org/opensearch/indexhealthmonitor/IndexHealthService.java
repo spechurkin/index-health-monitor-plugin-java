@@ -30,7 +30,7 @@ public class IndexHealthService {
    * @return json
    * @throws IOException Input/Output handler
    */
-  public static String mapToJson(Map<String, Object> map) throws IOException {
+  private static String mapToJson(Map<String, Object> map) throws IOException {
     StringWriter writer = new StringWriter();
     JsonFactory factory = new JsonFactory();
     JsonGenerator generator = factory.createGenerator(writer);
@@ -41,11 +41,7 @@ public class IndexHealthService {
       String key = entry.getKey();
       Object value = entry.getValue();
 
-      if (value instanceof String) {
-        generator.writeStringField(key, (String) value);
-      } else if (value instanceof Integer) {
-        generator.writeNumberField(key, (Integer) value);
-      } else if (value instanceof Map[]) {
+      if (value instanceof Map[]) {
         generator.writeArrayFieldStart(key);
         for (Map<String, String> phone : (Map<String, String>[]) value) {
           generator.writeStartObject();
@@ -56,6 +52,7 @@ public class IndexHealthService {
         }
         generator.writeEndArray();
       }
+      generator.writeStringField(key, value.toString());
     }
 
     generator.writeEndObject();
