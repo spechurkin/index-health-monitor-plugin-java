@@ -29,11 +29,12 @@
  * GitHub history for details.
  */
 
-package org.opensearch.indexhealthmonitor;
+package org.opensearch.indexhealthmonitor.action;
 
 import org.opensearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.opensearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.opensearch.common.Table;
+import org.opensearch.indexhealthmonitor.service.IndexHealthService;
 import org.opensearch.rest.RestRequest;
 import org.opensearch.rest.RestResponse;
 import org.opensearch.rest.action.RestResponseListener;
@@ -64,7 +65,21 @@ public class IndexHealthMonitorAction extends AbstractCatAction {
    * @return Syntax documentation.
    */
   public static String documentation() {
-    return "/_cat/index_health\n";
+    return """
+        /_cat/metrics
+        /_cat/metrics/clusterName
+        /_cat/metrics/taskMaxWaitingTime
+        /_cat/metrics/status
+        /_cat/metrics/activeShards
+        /_cat/metrics/relocatingShards
+        /_cat/metrics/initializingShards
+        /_cat/metrics/unassignedShards
+        /_cat/metrics/delayedUnassignedShards
+        /_cat/metrics/numberOfNodes
+        /_cat/metrics/numberOfDataNodes
+        /_cat/metrics/activePrimaryShards
+        /_cat/metrics/activeShardsPercent
+        """;
   }
 
   @Override
@@ -74,16 +89,32 @@ public class IndexHealthMonitorAction extends AbstractCatAction {
 
   @Override
   public List<Route> routes() {
-    return List.of(new Route(GET, "/_cat/index_health"));
+    return List.of(
+        new Route(GET, "/_cat/metrics"),
+        new Route(GET, "/_cat/metrics/clusterName"),
+        new Route(GET, "/_cat/metrics/taskMaxWaitingTime"),
+        new Route(GET, "/_cat/metrics/status"),
+        new Route(GET, "/_cat/metrics/activeShards"),
+        new Route(GET, "/_cat/metrics/relocatingShards"),
+        new Route(GET, "/_cat/metrics/initializingShards"),
+        new Route(GET, "/_cat/metrics/unassignedShards"),
+        new Route(GET, "/_cat/metrics/delayedUnassignedShards"),
+        new Route(GET, "/_cat/metrics/numberOfNodes"),
+        new Route(GET, "/_cat/metrics/numberOfDataNodes"),
+        new Route(GET, "/_cat/metrics/activePrimaryShards"),
+        new Route(GET, "/_cat/metrics/activeShardsPercent")
+    );
   }
 
   @Override
   protected RestChannelConsumer doCatRequest(RestRequest request, NodeClient client) {
+    String metric = request.path().split("/")[3];
+
     ClusterHealthRequest healthRequest = new ClusterHealthRequest();
     return channel -> client.admin().cluster().health(healthRequest, new RestResponseListener<>(channel) {
       @Override
       public RestResponse buildResponse(ClusterHealthResponse response) throws Exception {
-        return RestTable.buildResponse(service.getIndexHealthStatus(response), channel);
+        return RestTable.buildResponse(service.getIndexHealthStatus(response, metric), channel);
       }
     });
   }
@@ -95,6 +126,6 @@ public class IndexHealthMonitorAction extends AbstractCatAction {
 
   @Override
   public String getName() {
-    return "index_health_monitor";
+    return "index_health_monitor_action";
   }
 }
