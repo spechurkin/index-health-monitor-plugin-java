@@ -34,7 +34,7 @@ package org.opensearch.indexhealthmonitor.action;
 import org.opensearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.opensearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.opensearch.common.Table;
-import org.opensearch.indexhealthmonitor.service.IndexHealthService;
+import org.opensearch.indexhealthmonitor.service.JsonConverterService;
 import org.opensearch.rest.RestRequest;
 import org.opensearch.rest.RestResponse;
 import org.opensearch.rest.action.RestResponseListener;
@@ -51,7 +51,7 @@ import static org.opensearch.rest.RestRequest.Method.GET;
  */
 public class IndexHealthMonitorAction extends AbstractCatAction {
 
-  private final IndexHealthService service = new IndexHealthService();
+  private final JsonConverterService service = new JsonConverterService();
 
   /**
    * Empty initialization constructor
