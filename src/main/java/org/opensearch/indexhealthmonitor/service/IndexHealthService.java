@@ -1,4 +1,4 @@
-package org.opensearch.indexhealthmonitor;
+package org.opensearch.indexhealthmonitor.service;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -43,18 +43,31 @@ public class IndexHealthService {
 
       if (value instanceof Map[]) {
         generator.writeArrayFieldStart(key);
-        for (Map<String, String> phone : (Map<String, String>[]) value) {
+        for (Map<String, Object> phone : (Map<String, Object>[]) value) {
           generator.writeStartObject();
-          for (Map.Entry<String, String> phoneEntry : phone.entrySet()) {
-            generator.writeStringField(phoneEntry.getKey(), phoneEntry.getValue());
+          for (Map.Entry<String, Object> phoneEntry : phone.entrySet()) {
+            generator.writeObjectField(phoneEntry.getKey(), phoneEntry.getValue());
           }
           generator.writeEndObject();
         }
         generator.writeEndArray();
       }
-      generator.writeStringField(key, value.toString());
+      generator.writeObjectField(key, value);
     }
 
+    generator.writeEndObject();
+    generator.close();
+
+    return writer.toString();
+  }
+
+  private String pairToJson(String key, Object value) throws IOException {
+    StringWriter writer = new StringWriter();
+    JsonFactory factory = new JsonFactory();
+    JsonGenerator generator = factory.createGenerator(writer);
+
+    generator.writeStartObject();
+    generator.writeObjectField(key, value);
     generator.writeEndObject();
     generator.close();
 
@@ -65,13 +78,15 @@ public class IndexHealthService {
    * Health status extraction method
    *
    * @param response cluster admin data
+   * @param metric   requested metric. If null, sends full metric
    * @return data table
    * @throws IOException Input/Output handler
    */
-  public Table getIndexHealthStatus(ClusterHealthResponse response) throws IOException {
+  public Table getIndexHealthStatus(ClusterHealthResponse response, String metric) throws IOException {
     Map<String, Object> map = new HashMap<>();
     map.put("clusterName", response.getClusterName());
     map.put("currentDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
+    map.put("taskMaxWaitingTime", response.getTaskMaxWaitingTime());
     map.put("status", response.getStatus().name());
     map.put("activeShards", response.getActiveShards());
     map.put("relocatingShards", response.getRelocatingShards());
@@ -84,13 +99,19 @@ public class IndexHealthService {
     map.put("activeShardsPercent", response.getActiveShardsPercent());
 
     Table table = new Table();
-
     table.startHeaders();
     table.addCell("Index Health Status JSON");
     table.endHeaders();
-    table.startRow();
-    table.addCell(mapToJson(map));
-    table.endRow();
+
+    if (metric == null) {
+      table.startRow();
+      table.addCell(mapToJson(map));
+      table.endRow();
+    } else if (map.containsKey(metric)) {
+      table.startRow();
+      table.addCell(pairToJson(metric, map.get(metric)));
+      table.endRow();
+    }
 
     return table;
   }
