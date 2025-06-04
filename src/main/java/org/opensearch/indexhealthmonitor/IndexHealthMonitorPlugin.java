@@ -37,6 +37,8 @@ import org.opensearch.common.settings.ClusterSettings;
 import org.opensearch.common.settings.IndexScopedSettings;
 import org.opensearch.common.settings.Settings;
 import org.opensearch.common.settings.SettingsFilter;
+import org.opensearch.indexhealthmonitor.action.EchoAction;
+import org.opensearch.indexhealthmonitor.action.IndexHealthMonitorAction;
 import org.opensearch.plugins.ActionPlugin;
 import org.opensearch.plugins.Plugin;
 import org.opensearch.rest.RestController;
@@ -44,8 +46,6 @@ import org.opensearch.rest.RestHandler;
 
 import java.util.List;
 import java.util.function.Supplier;
-
-import static java.util.Collections.singletonList;
 
 /**
  * REST plugin showing full DB health
@@ -68,6 +68,6 @@ public class IndexHealthMonitorPlugin extends Plugin implements ActionPlugin {
       IndexNameExpressionResolver indexNameExpressionResolver,
       Supplier<DiscoveryNodes> nodesInCluster
   ) {
-    return singletonList(new IndexHealthMonitorAction());
+    return List.of(new IndexHealthMonitorAction(), new EchoAction());
   }
 }
