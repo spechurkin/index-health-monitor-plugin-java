@@ -15,12 +15,12 @@ import java.util.Map;
 /**
  * Additional service for tables
  */
-public class IndexHealthService {
+public class JsonConverterService {
 
   /**
    * Empty initialization constructor
    */
-  public IndexHealthService() {
+  public JsonConverterService() {
   }
 
   /**
@@ -114,5 +114,16 @@ public class IndexHealthService {
     }
 
     return table;
+  }
+
+  /**
+   * Message to JSON wrapper method
+   *
+   * @param message your message
+   * @return message JSON
+   * @throws IOException Input/Output handler
+   */
+  public String getMessageFormatted(String message) throws IOException {
+    return pairToJson("message", message);
   }
 }
