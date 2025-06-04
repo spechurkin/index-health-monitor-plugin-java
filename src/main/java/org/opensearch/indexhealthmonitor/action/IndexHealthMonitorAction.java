@@ -66,19 +66,19 @@ public class IndexHealthMonitorAction extends AbstractCatAction {
    */
   public static String documentation() {
     return """
-        /_cat/metrics
-        /_cat/metrics/clusterName
-        /_cat/metrics/taskMaxWaitingTime
-        /_cat/metrics/status
-        /_cat/metrics/activeShards
-        /_cat/metrics/relocatingShards
-        /_cat/metrics/initializingShards
-        /_cat/metrics/unassignedShards
-        /_cat/metrics/delayedUnassignedShards
-        /_cat/metrics/numberOfNodes
-        /_cat/metrics/numberOfDataNodes
-        /_cat/metrics/activePrimaryShards
-        /_cat/metrics/activeShardsPercent
+        /nn2/metrics
+        /nn2/metrics/clusterName
+        /nn2/metrics/taskMaxWaitingTime
+        /nn2/metrics/status
+        /nn2/metrics/activeShards
+        /nn2/metrics/relocatingShards
+        /nn2/metrics/initializingShards
+        /nn2/metrics/unassignedShards
+        /nn2/metrics/delayedUnassignedShards
+        /nn2/metrics/numberOfNodes
+        /nn2/metrics/numberOfDataNodes
+        /nn2/metrics/activePrimaryShards
+        /nn2/metrics/activeShardsPercent
         """;
   }
 
@@ -90,19 +90,19 @@ public class IndexHealthMonitorAction extends AbstractCatAction {
   @Override
   public List<Route> routes() {
     return List.of(
-        new Route(GET, "/_cat/metrics"),
-        new Route(GET, "/_cat/metrics/clusterName"),
-        new Route(GET, "/_cat/metrics/taskMaxWaitingTime"),
-        new Route(GET, "/_cat/metrics/status"),
-        new Route(GET, "/_cat/metrics/activeShards"),
-        new Route(GET, "/_cat/metrics/relocatingShards"),
-        new Route(GET, "/_cat/metrics/initializingShards"),
-        new Route(GET, "/_cat/metrics/unassignedShards"),
-        new Route(GET, "/_cat/metrics/delayedUnassignedShards"),
-        new Route(GET, "/_cat/metrics/numberOfNodes"),
-        new Route(GET, "/_cat/metrics/numberOfDataNodes"),
-        new Route(GET, "/_cat/metrics/activePrimaryShards"),
-        new Route(GET, "/_cat/metrics/activeShardsPercent")
+        new Route(GET, "/nn2/metrics"),
+        new Route(GET, "/nn2/metrics/clusterName"),
+        new Route(GET, "/nn2/metrics/taskMaxWaitingTime"),
+        new Route(GET, "/nn2/metrics/status"),
+        new Route(GET, "/nn2/metrics/activeShards"),
+        new Route(GET, "/nn2/metrics/relocatingShards"),
+        new Route(GET, "/nn2/metrics/initializingShards"),
+        new Route(GET, "/nn2/metrics/unassignedShards"),
+        new Route(GET, "/nn2/metrics/delayedUnassignedShards"),
+        new Route(GET, "/nn2/metrics/numberOfNodes"),
+        new Route(GET, "/nn2/metrics/numberOfDataNodes"),
+        new Route(GET, "/nn2/metrics/activePrimaryShards"),
+        new Route(GET, "/nn2/metrics/activeShardsPercent")
     );
   }
 

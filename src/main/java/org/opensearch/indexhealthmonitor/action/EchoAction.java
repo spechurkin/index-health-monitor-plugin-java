@@ -32,8 +32,8 @@ public class EchoAction extends AbstractCatAction {
    */
   public static String documentation() {
     return """
-        /_cat/echo
-        /_cat/echo/{message}
+        /echo
+        /echo/{message}
         """;
   }
 
@@ -75,8 +75,8 @@ public class EchoAction extends AbstractCatAction {
   @Override
   public List<Route> routes() {
     return List.of(
-        new Route(GET, "/_cat/echo"),
-        new Route(GET, "/_cat/echo/{message}")
+        new Route(GET, "/echo"),
+        new Route(GET, "/echo/{message}")
     );
   }
 
