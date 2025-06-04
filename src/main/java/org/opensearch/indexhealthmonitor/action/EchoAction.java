@@ -1,16 +1,14 @@
 package org.opensearch.indexhealthmonitor.action;
 
-import org.opensearch.action.admin.cluster.health.ClusterHealthRequest;
-import org.opensearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.opensearch.common.Table;
+import org.opensearch.core.rest.RestStatus;
+import org.opensearch.rest.BytesRestResponse;
 import org.opensearch.rest.RestRequest;
-import org.opensearch.rest.RestResponse;
-import org.opensearch.rest.action.RestResponseListener;
 import org.opensearch.rest.action.cat.AbstractCatAction;
-import org.opensearch.rest.action.cat.RestTable;
 import org.opensearch.transport.client.node.NodeClient;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.opensearch.rest.RestRequest.Method.GET;
 
@@ -40,26 +38,12 @@ public class EchoAction extends AbstractCatAction {
   @Override
   protected RestChannelConsumer doCatRequest(RestRequest request, NodeClient client) {
     String message = request.hasParam("message") ? request.param("message") : null;
-    ClusterHealthRequest healthRequest = new ClusterHealthRequest();
-    return channel -> client.admin().cluster().health(healthRequest, new RestResponseListener<>(channel) {
-      @Override
-      public RestResponse buildResponse(ClusterHealthResponse response) throws Exception {
-        if (message != null) {
-          return RestTable.buildResponse(
-              getTableWithHeader(request)
-                  .startRow()
-                  .addCell("Your message was:\n" + message)
-                  .endRow(),
-              channel);
-        }
-        return RestTable.buildResponse(
-            getTableWithHeader(request)
-                .startRow()
-                .addCell("no message provided")
-                .endRow(),
-            channel);
-      }
-    });
+    return channel -> channel.sendResponse(
+        new BytesRestResponse(
+            RestStatus.OK,
+            Objects.requireNonNullElse(message, "no message provided")
+        )
+    );
   }
 
   @Override
