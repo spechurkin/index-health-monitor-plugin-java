@@ -43,16 +43,16 @@ public class IndexHealthService {
 
       if (value instanceof Map[]) {
         generator.writeArrayFieldStart(key);
-        for (Map<String, Object> phone : (Map<String, Object>[]) value) {
+        for (Map<String, String> phone : (Map<String, String>[]) value) {
           generator.writeStartObject();
-          for (Map.Entry<String, Object> phoneEntry : phone.entrySet()) {
-            generator.writeObjectField(phoneEntry.getKey(), phoneEntry.getValue());
+          for (Map.Entry<String, String> phoneEntry : phone.entrySet()) {
+            generator.writeStringField(phoneEntry.getKey(), phoneEntry.getValue());
           }
           generator.writeEndObject();
         }
         generator.writeEndArray();
       }
-      generator.writeObjectField(key, value);
+      generator.writeStringField(key, value.toString());
     }
 
     generator.writeEndObject();
@@ -67,7 +67,7 @@ public class IndexHealthService {
     JsonGenerator generator = factory.createGenerator(writer);
 
     generator.writeStartObject();
-    generator.writeObjectField(key, value);
+    generator.writeStringField(key, value.toString());
     generator.writeEndObject();
     generator.close();
 

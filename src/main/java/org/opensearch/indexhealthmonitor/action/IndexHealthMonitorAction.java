@@ -108,7 +108,10 @@ public class IndexHealthMonitorAction extends AbstractCatAction {
 
   @Override
   protected RestChannelConsumer doCatRequest(RestRequest request, NodeClient client) {
-    String metric = request.path().split("/")[3];
+    String metric;
+
+    if (request.path().split("/").length == 4) metric = request.path().split("/")[3];
+    else metric = null;
 
     ClusterHealthRequest healthRequest = new ClusterHealthRequest();
     return channel -> client.admin().cluster().health(healthRequest, new RestResponseListener<>(channel) {
