@@ -8,7 +8,6 @@ import org.opensearch.rest.action.cat.AbstractCatAction;
 import org.opensearch.transport.client.node.NodeClient;
 
 import java.util.List;
-import java.util.Objects;
 
 import static org.opensearch.rest.RestRequest.Method.GET;
 
@@ -37,11 +36,11 @@ public class EchoAction extends AbstractCatAction {
 
   @Override
   protected RestChannelConsumer doCatRequest(RestRequest request, NodeClient client) {
-    String message = request.hasParam("message") ? request.param("message") : null;
+    String message = request.hasParam("message") ? request.param("message") : "no message provided";
     return channel -> channel.sendResponse(
         new BytesRestResponse(
             RestStatus.OK,
-            Objects.requireNonNullElse(message, "no message provided")
+            message
         )
     );
   }
