@@ -2,6 +2,7 @@ package org.opensearch.indexhealthmonitor.action;
 
 import org.opensearch.common.Table;
 import org.opensearch.core.rest.RestStatus;
+import org.opensearch.indexhealthmonitor.service.JsonConverterService;
 import org.opensearch.rest.BytesRestResponse;
 import org.opensearch.rest.RestRequest;
 import org.opensearch.rest.action.cat.AbstractCatAction;
@@ -15,6 +16,8 @@ import static org.opensearch.rest.RestRequest.Method.GET;
  * Simple *echo* action handler
  */
 public class EchoAction extends AbstractCatAction {
+
+  private final JsonConverterService service = new JsonConverterService();
 
   /**
    * Empty initialization constructor
@@ -40,7 +43,8 @@ public class EchoAction extends AbstractCatAction {
     return channel -> channel.sendResponse(
         new BytesRestResponse(
             RestStatus.OK,
-            message
+            "application/json",
+            service.getMessageFormatted(message)
         )
     );
   }
